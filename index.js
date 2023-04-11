@@ -93,6 +93,12 @@ app.get("/", checkAuthenticated, (req, res) => {
   });
 });
 
+const searchesRouter = require("./routes/search");
+app.use("/search", checkAuthenticated, searchesRouter);
+
+const userHistoryRouter = require("./routes/userHistory");
+app.use("/userHistory", checkAuthenticated, userHistoryRouter);
+
 //-----------------------------------------------------------------------------
 
 app.get("/login", checkNotAuthenticated, (req, res) => {
