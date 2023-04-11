@@ -28,8 +28,132 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 
-const logins = require("./services/pg_logins.dal");
+const logins = require("./services/postgres_logins.dal");
+const e = require("express");
 
 global.DEBUG = true;
 
 //----------------------------------------------------------------------------------------
+
+passport.use(
+  new localStrategy(
+    { usernameField: "email" },
+    async (email, password, done) => {
+      let user = await logins.getLoginByEmail(email);
+      if (user == null) {
+        if (DEBUG) console.log("No records of email: " + email);
+        return done(null, false, { message: "No user with that email." });
+      }
+      try {
+        if (await bcrypt.compare(password, user.password)) {
+          return done(null, user);
+        } else {
+          if (DEBUG) console.log("Incorrect password");
+          return done(null, false, {
+            message: "Incorrect password was entered.",
+          });
+        }
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  let user = await logins.getLoginById(id);
+  if (DEBUG) console.log("passport.deserializeUser: " + user);
+  console.log(
+    "User id: " +
+      user._id +
+      ", username: " +
+      user.username +
+      ", email: " +
+      user.email +
+      ", uuid: [" +
+      user.uuid +
+      "]"
+  );
+  done(null, user);
+});
+
+//------------------------------------------------------------------------------
+
+// routes
+
+app.get("/", checkAuthenticated, (req, res) => {
+  res.render("home.ejs", {
+    name: req.user.username,
+    email: req.user.email,
+    id: req.user._id,
+  });
+});
+
+//-----------------------------------------------------------------------------
+
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  res.render("login.ejs");
+});
+
+app.post(
+  "/login",
+  checkNotAuthenticated,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
+
+app.get("/register", checkNotAuthenticated, (req, res) => {
+  res.render("register.ejs");
+});
+
+app.post("/register", checkNotAuthenticated, async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    let result = await logins.addLogin(
+      req.body.name,
+      req.body.email,
+      hashedPassword,
+      uuid.v4()
+    );
+    res.redirect("/login");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/register");
+  }
+});
+
+app.delete("/logout", function (req, res, next) {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/");
+  }
+  return next();
+}
+
+app.listen(PORT, (err) => {
+  if (err) console.log(err);
+  console.log(`Passport app running on port ${PORT}.`);
+});
+
+//-------------------------------------------------------------------------------
