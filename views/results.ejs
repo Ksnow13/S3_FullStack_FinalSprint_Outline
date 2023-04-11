@@ -7,7 +7,7 @@
             <hr>
         </div>
         <form action="/results" method="POST">
-            <h3>from mongo data base</h3>
+            <h3>from <%= theDb %> data base</h3>
             <b>Results: [<%= theSearches.length %>] for keyword searched; "<%= search %>" </b></br> <br> <br> <br>
             
             <% if (theSearches.length > 0) { %>
