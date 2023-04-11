@@ -23,18 +23,6 @@ CREATE TABLE IF NOT EXISTS public."history"
     PRIMARY KEY (history_id)
 )
 
-CREATE TABLE public."vehicle"
-(
-    id serial NOT NULL,
-    first_name VARCHAR(50),
-	last_name VARCHAR(50),
-	email VARCHAR(50),
-	gender VARCHAR(50),
-	ip_address VARCHAR(20),
-    PRIMARY KEY (id)
-)
-
-
 create table public."vehicle" (
 	id serial NOT NULL,
 	year VARCHAR(50),
@@ -48,6 +36,7 @@ create table public."vehicle" (
 	address VARCHAR(50),
 	PRIMARY KEY (id)
 );
+
 
 select * from login;
 select * from history;
@@ -1056,11 +1045,3 @@ insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, a
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (998, 2009, 'Ford', 'Explorer', 'Crimson', '137ZA83321E041018', '$21715.89', 'Nigeria', 'Omoku', '6388 Scott Center');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (999, 2001, 'Mitsubishi', 'Lancer', 'Violet', 'SCFBB03C89G191715', '$48529.96', 'China', 'Bashan', '9 Swallow Circle');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (1000, 1988, 'Ford', 'Ranger', 'Violet', 'WBADW7C52CE819631', '$48079.04', 'Bolivia', 'Warnes', '75 Darwin Alley');
-
-
-
-
-
-
-
-
