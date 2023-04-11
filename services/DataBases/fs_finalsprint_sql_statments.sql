@@ -1,5 +1,42 @@
-create table vehicle (
-	id INT,
+CREATE TABLE IF NOT EXISTS public."login"
+(
+    id serial NOT NULL,
+    username character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(128) COLLATE pg_catalog."default" NOT NULL,
+    uuid uuid NOT NULL,
+    CONSTRAINT "Login_pkey" PRIMARY KEY (id),
+    CONSTRAINT unique_username UNIQUE (username)
+)
+
+CREATE TABLE IF NOT EXISTS public."history"
+(
+    history_id serial NOT NULL,
+    user_id int NOT NULL,
+    username VARCHAR(50) NOT NULL,
+	item_searched VARCHAR(100) NOT NULL,
+	db_used VARCHAR(50) NOT NULL,
+	search_results int NOT NULL,
+    date VARCHAR(100) NOT NULL,
+    uuid uuid NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES login(id),
+    PRIMARY KEY (history_id)
+)
+
+CREATE TABLE public."vehicle"
+(
+    id serial NOT NULL,
+    first_name VARCHAR(50),
+	last_name VARCHAR(50),
+	email VARCHAR(50),
+	gender VARCHAR(50),
+	ip_address VARCHAR(20),
+    PRIMARY KEY (id)
+)
+
+
+create table public."vehicle" (
+	id serial NOT NULL,
 	year VARCHAR(50),
 	brand VARCHAR(50),
 	model VARCHAR(50),
@@ -8,8 +45,17 @@ create table vehicle (
 	cost VARCHAR(50),
 	country VARCHAR(50),
 	city VARCHAR(50),
-	address VARCHAR(50)
+	address VARCHAR(50),
+	PRIMARY KEY (id)
 );
+
+select * from login;
+select * from history;
+select * from vehicle;
+
+select * from vehicle
+where to_tsvector(year || ' ' || brand || ' ' || model || ' ' || colour || ' ' || country || ' ' || city || ' ' || address) @@ to_tsquery('male');
+
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (1, 1999, 'Nissan', 'Altima', 'Turquoise', '1G6KF54955U370277', '$25194.56', 'New Zealand', 'Pleasant Point', '6 School Trail');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (2, 2005, 'Ford', 'Excursion', 'Turquoise', '2T1KU4EE5CC391083', '$87739.97', 'Peru', 'Choropampa', '39 Birchwood Plaza');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (3, 2005, 'Subaru', 'Outback', 'Puce', '5NPDH4AE2BH047872', '$75786.06', 'Brazil', 'Araucária', '702 Texas Road');
@@ -1010,3 +1056,11 @@ insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, a
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (998, 2009, 'Ford', 'Explorer', 'Crimson', '137ZA83321E041018', '$21715.89', 'Nigeria', 'Omoku', '6388 Scott Center');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (999, 2001, 'Mitsubishi', 'Lancer', 'Violet', 'SCFBB03C89G191715', '$48529.96', 'China', 'Bashan', '9 Swallow Circle');
 insert into vehicle (id, year, brand, model, colour, vin, cost, country, city, address) values (1000, 1988, 'Ford', 'Ranger', 'Violet', 'WBADW7C52CE819631', '$48079.04', 'Bolivia', 'Warnes', '75 Darwin Alley');
+
+
+
+
+
+
+
+

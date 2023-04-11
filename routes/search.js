@@ -56,6 +56,7 @@ router.get("/results", async (req, res) => {
         email: req.user.email,
         id: req.user._id,
         search: req.query.search,
+        theDb: req.query.db == "both" ? "mongo & postgres" : req.query.db,
       });
       historyDal.addHistoryLog(
         req.user._id,
@@ -80,6 +81,7 @@ router.get("/results", async (req, res) => {
         email: req.user.email,
         id: req.user._id,
         search: req.query.search,
+        theDb: req.query.db == "both" ? "mongo & postgres" : req.query.db,
       });
       historyDal.addHistoryLog(
         req.user._id,
@@ -91,11 +93,7 @@ router.get("/results", async (req, res) => {
     } catch {
       res.render("503");
     }
-  }
-
-  /*
-  
-  else {
+  } else {
     try {
       let theSearchesMongo = await searchesDal.getSearchedVehicles(
         req.query.search
@@ -115,20 +113,20 @@ router.get("/results", async (req, res) => {
         email: req.user.email,
         id: req.user._id,
         search: req.query.search,
+        theDb: req.query.db == "both" ? "mongo & postgres" : req.query.db,
       });
 
       historyDal.addHistoryLog(
         req.user._id,
         req.user.username,
         req.query.search,
-        theSearchesMongo.length + theSearchesPG.length
+        theSearchesMongo.length + theSearchesPG.length,
+        req.query.db == "both" ? "mongo & postgres" : req.query.db
       );
     } catch {
       res.render("503");
     }
-    
   }
-  */
 });
 
 module.exports = router;
