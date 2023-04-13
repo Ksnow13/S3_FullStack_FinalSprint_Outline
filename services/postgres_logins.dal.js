@@ -37,9 +37,38 @@ async function addLogin(name, email, password, uuidv4) {
   }
 }
 
+async function getAccountById(id) {
+  return new Promise(function (resolve, reject) {
+    const sql = `SELECT id AS _id, username, password, email, uuid FROM public."login" WHERE id = $1;`;
+    dal.query(sql, [id], (err, result) => {
+      if (err) {
+        if (DEBUG) console.log(err);
+        reject(err);
+      } else {
+        resolve(result.rows);
+      }
+    });
+  });
+}
+
+var patchAccount = function (id, username) {
+  return new Promise(function (resolve, reject) {
+    const sql = `UPDATE public."login" SET username=$2 WHERE id=$1;`;
+    dal.query(sql, [id, username], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result.rows);
+      }
+    });
+  });
+};
+
 module.exports = {
   getLogins,
   addLogin,
   getLoginByEmail,
   getLoginById,
+  getAccountById,
+  patchAccount,
 };

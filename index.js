@@ -29,7 +29,7 @@ app.use(passport.session());
 app.use(methodOverride("_method"));
 
 const logins = require("./services/postgres_logins.dal");
-const e = require("express");
+//const e = require("express");
 
 global.DEBUG = true;
 
@@ -99,6 +99,9 @@ app.use("/search", checkAuthenticated, searchesRouter);
 const userHistoryRouter = require("./routes/userHistory");
 app.use("/userHistory", checkAuthenticated, userHistoryRouter);
 
+const accountRouter = require("./routes/account");
+app.use("/account", checkAuthenticated, accountRouter);
+
 //-----------------------------------------------------------------------------
 
 app.get("/login", checkNotAuthenticated, (req, res) => {
@@ -160,7 +163,9 @@ function checkNotAuthenticated(req, res, next) {
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);
-  console.log(`Passport app running on port ${PORT}.`);
+  console.log(`The app running on port ${PORT}.`);
+  console.log(`Press Ctrl C to terminate...`);
+  console.log("");
 });
 
 //-------------------------------------------------------------------------------
