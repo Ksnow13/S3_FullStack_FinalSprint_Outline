@@ -3,6 +3,14 @@ const dal = require("./postgres_db");
 const { format } = require("date-fns");
 const uuid = require("uuid");
 
+//const EventEmitter = require("events");
+
+//class MyEmitter extends EventEmitter {}
+
+//const myEmitter = new MyEmitter();
+
+const eventLogs = require("../eventLogger");
+
 async function getHistoryByUserID(id) {
   return new Promise(function (resolve, reject) {
     let sql = `SELECT * FROM public."history" WHERE user_id = ${id};`;
@@ -38,6 +46,15 @@ async function addHistoryLog(
       currentDate,
       uuidv4,
     ]);
+    eventLogs(
+      userId,
+      username,
+      itemSearched,
+      dataBasedUsed,
+      numberOfResults,
+      currentDate,
+      uuidv4
+    );
     //return results.rows[0].userId;
   } catch (error) {
     console.log(error);
