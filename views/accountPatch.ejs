@@ -1,0 +1,17 @@
+<html lang="en">
+    <body>
+        <%- include('./partials/nav.ejs') %>
+        <div class="edit-container">
+            <div class="form-container">
+                <form action="/account/<%= locals.theId %>?_method=PATCH" method="POST">
+                    <h1 class="form-container-title">What would you like your new username to be...</h1>
+                    <h3 class="input-username">enter username here</h3>
+                    <input class="theinput" type="text" name="username" value="<%= locals.username %>" required> <br>
+                    </br> <br>
+                    <button class="submit">PATCH</button>
+                </form>
+            </div>
+        </div>
+    </body>
+    <%- include('./partials/logout.ejs') %>
+</html>
