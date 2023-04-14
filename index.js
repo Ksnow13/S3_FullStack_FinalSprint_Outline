@@ -1,3 +1,11 @@
+/*
+
+Kyle Snow, Ken Chafe, Tyler Power, Kayleigh McGrath
+Final Sprint - JS FullStack
+Keyin Collage
+April 6 2023 - April 16 2023
+*/
+
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -12,6 +20,9 @@ const methodOverride = require("method-override");
 const uuid = require("uuid");
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -29,11 +40,8 @@ app.use(passport.session());
 app.use(methodOverride("_method"));
 
 const logins = require("./services/postgres_logins.dal");
-//const e = require("express");
 
 global.DEBUG = true;
-
-//----------------------------------------------------------------------------------------
 
 passport.use(
   new localStrategy(
