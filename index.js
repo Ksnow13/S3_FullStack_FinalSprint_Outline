@@ -119,22 +119,29 @@ app.post(
 );
 
 app.get("/register", checkNotAuthenticated, (req, res) => {
-  res.render("register.ejs");
+  res.render("register.ejs", { message: req.flash("message") });
 });
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    let result = await logins.addLogin(
-      req.body.name,
-      req.body.email,
-      hashedPassword,
-      uuid.v4()
-    );
-    res.redirect("/login");
-  } catch (error) {
-    console.log(error);
+  let user = await logins.getLoginByEmail(req.body.email);
+  if (user != null) {
+    if (DEBUG) console.log("email is already being used: " + req.body.email);
+    req.flash("message", "Sorry, this email is already in use.");
     res.redirect("/register");
+  } else {
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      let result = await logins.addLogin(
+        req.body.name,
+        req.body.email,
+        hashedPassword,
+        uuid.v4()
+      );
+      res.redirect("/login");
+    } catch (error) {
+      console.log(error);
+      res.redirect("/register");
+    }
   }
 });
 
